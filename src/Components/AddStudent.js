@@ -13,12 +13,15 @@ function AddStudent() {
     address: "",
     mobileNumber: "",
   });
+  const extraMobile=()=>{
+    if (newStudent.mobileNumber.length !== 10 && newStudent.mobileNumber !=="") {
+      document.getElementById("validMobile").innerHTML="Enter 10-digit mobile number";
+    }
+  }
 
   const validMobile = () => {
     if (newStudent.mobileNumber.length === 0) {
       document.getElementById("validMobile").innerHTML="Enter mobile number";
-    } else if (newStudent.mobileNumber.length !== 10) {
-      document.getElementById("validMobile").innerHTML="Enter 10-digit mobile number";
     }
     else{
       document.getElementById("validMobile").innerHTML="";
@@ -26,7 +29,7 @@ function AddStudent() {
   };
   const validGender = () => {
     gen=0;
-    if(document.getElementById("male").checked != true && document.getElementById("female").checked != true )
+    if(document.getElementById("male").checked !== true && document.getElementById("female").checked !== true )
     {
       document.getElementById("validGender").innerHTML="Enter Gender";
       gen=1;
@@ -38,24 +41,22 @@ function AddStudent() {
   const validName = () => {
     
     if (newStudent.name === "") {
-      document.getElementById("validName").innerHTML="Enter Name";;
-    } 
-    else if(newStudent.name!=="")
-    {
-      temp=0;
-      for (let i = 0; i < newStudent.name.length; i++) {
-        if (!isNaN(newStudent.name[i])) {
-          document.getElementById("validName").innerHTML="Enter valid Name";
-          temp=1;
-          break;
-        }
-        
+      document.getElementById("validName").innerHTML="Enter Name";
+    }    
+    else
+     {
+        document.getElementById("validName").innerHTML="";
       }
     }
-    if(temp==0){
-      document.getElementById("validName").innerHTML="";
+    const extraName =()=>{
+        temp=0;
+        var regex = (/^[a-zA-Z ]{2,30}$/);
+        if(!regex.test(newStudent.name) && newStudent.name !=="")
+        {
+          document.getElementById("validName").innerHTML="Enter Valid Name";
+          temp=1;
+        }
     }
-  };
   const validDob = () => {
     if (newStudent.dob === "") {
       document.getElementById("validDob").innerHTML="Enter Dob";
@@ -74,19 +75,23 @@ function AddStudent() {
   };
   const handleInputChange = (e) => {
     setNewStudent({ ...newStudent, [e.target.name]: e.target.value });
-    validName();
+    validName();   
     validDob();
     validGender();
     validAddress();
     validMobile();
+   
   };
   const submitHandler = (e) => {
     e.preventDefault();
     validName();
+    extraName();   
     validDob();
     validGender();
     validAddress();
     validMobile();
+    extraMobile();
+    
     
     
     if (
@@ -95,7 +100,7 @@ function AddStudent() {
       newStudent.gender !== "" &&
       newStudent.address !== "" &&
       newStudent.mobileNumber !== "" &&
-      newStudent.mobileNumber.length === 10 && temp==0 && gen==0)
+      newStudent.mobileNumber.length === 10 && temp===0 && gen===0)
      {
       axios.post("http://localhost:8000/student", newStudent);
        formData.push(newStudent);
